@@ -1,0 +1,20 @@
+xlerobot_driver:
+  ros__parameters:
+    robot_variant: xlerobot
+    robot_id: xlerobot_ros2
+    port1: /dev/ttyACM0
+    port2: /dev/ttyACM1
+    mock_hardware: false
+    calibrate_on_connect: false
+    disable_torque_on_disconnect: true
+    max_relative_target_degrees: 15.0
+    state_publish_rate: 30.0
+    command_rate: 50.0
+    cmd_vel_timeout: 0.25
+    max_linear_speed: 0.30
+    max_angular_speed: 1.57
+    joint_states_topic: joint_states
+    joint_command_topic: joint_commands
+    trajectory_command_topic: joint_trajectory
+    cmd_vel_topic: cmd_vel
+    base_velocity_topic: base_velocity

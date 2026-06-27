@@ -1,0 +1,36 @@
+xlerobot_leader_follower:
+  ros__parameters:
+    leader_topic: leader/joint_states
+    command_topic: joint_commands
+    publish_rate: 50.0
+    stale_timeout: 0.25
+    filter_alpha: 0.35
+    max_delta: 0.12
+    source_joints:
+      - left_arm_shoulder_pan
+      - left_arm_shoulder_lift
+      - left_arm_elbow_flex
+      - left_arm_wrist_flex
+      - left_arm_wrist_roll
+      - left_arm_gripper
+      - right_arm_shoulder_pan
+      - right_arm_shoulder_lift
+      - right_arm_elbow_flex
+      - right_arm_wrist_flex
+      - right_arm_wrist_roll
+      - right_arm_gripper
+    target_joints:
+      - left_arm_shoulder_pan
+      - left_arm_shoulder_lift
+      - left_arm_elbow_flex
+      - left_arm_wrist_flex
+      - left_arm_wrist_roll
+      - left_arm_gripper
+      - right_arm_shoulder_pan
+      - right_arm_shoulder_lift
+      - right_arm_elbow_flex
+      - right_arm_wrist_flex
+      - right_arm_wrist_roll
+      - right_arm_gripper
+    scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    offsets: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]

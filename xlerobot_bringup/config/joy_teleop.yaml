@@ -1,0 +1,30 @@
+xlerobot_joy_teleop:
+  ros__parameters:
+    joy_topic: joy
+    joint_states_topic: joint_states
+    joint_command_topic: joint_commands
+    cmd_vel_topic: cmd_vel
+    publish_rate: 50.0
+    joy_timeout: 0.25
+    deadzone: 0.12
+
+    # Linux joy_node mapping for a common Xbox controller.
+    base_deadman_button: 0       # A
+    turbo_button: 1              # B (while A is held)
+    left_arm_mode_button: 4      # LB
+    right_arm_mode_button: 5     # RB
+    head_mode_button: 7          # Start/Menu
+
+    linear_x_axis: 1             # left stick vertical
+    linear_y_axis: 0             # left stick horizontal
+    angular_z_axis: 3            # right stick horizontal
+    max_linear_speed: 0.20       # m/s
+    max_angular_speed: 1.05      # rad/s
+    turbo_multiplier: 1.5
+
+    # In arm mode: axes 0/1/4/3/6/7 control the six joints.
+    arm_axes: [0, 1, 4, 3, 6, 7]
+    head_axes: [0, 1]
+    joint_rate: 0.70             # rad/s
+    gripper_rate: 0.65           # normalized opening/s
+    head_rate: 0.70              # rad/s

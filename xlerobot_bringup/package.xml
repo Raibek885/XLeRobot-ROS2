@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>xlerobot_bringup</name>
+  <version>0.1.0</version>
+  <description>Launch and configuration package for XLeRobot ROS 2 teleoperation.</description>
+  <maintainer email="raibek885@users.noreply.github.com">XLeRobot maintainers</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>joy</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>xlerobot_driver</exec_depend>
+  <exec_depend>xlerobot_teleop</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

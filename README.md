@@ -1,0 +1,124 @@
+# XLeRobot ROS 2
+
+ROS 2 Jazzy teleoperation stack for the XLeRobot dual-arm mobile manipulator. The
+repository contains only the ROS packages, the required XLeRobot hardware adapters,
+configuration, tests, and documentation. Clone it directly into a workspace `src/`
+directory.
+
+## Packages
+
+- `xlerobot_driver`: owns the two serial buses, publishes `sensor_msgs/JointState`
+  and base velocity, and accepts `JointState`, `JointTrajectory`, and `Twist`
+  commands. It supports the three-wheel, differential two-wheel, and mecanum
+  XLeRobot variants plus a no-hardware mock mode. The required LeRobot-compatible
+  XLeRobot adapters are bundled in this package.
+- `xlerobot_teleop`: deadman-protected Xbox-style gamepad control and a generic,
+  name-based leader/follower relay with scaling, offsets, filtering, a step bound,
+  and a stale-input timeout.
+- `xlerobot_bringup`: launch files and conservative default parameter files.
+
+The design is inspired by
+[`legalaspro/so101-ros-physical-ai`](https://github.com/legalaspro/so101-ros-physical-ai),
+adapted for XLeRobot's dual arms, head, and mobile base.
+
+## Prerequisites
+
+- Ubuntu 24.04 and ROS 2 Jazzy.
+- LeRobot installed with Feetech support in the same Python environment used to
+  build this workspace. Verify it with `python3 -c "import lerobot"`.
+- A calibrated XLeRobot. Complete the standard LeRobot motor setup and calibration
+  before starting the ROS driver.
+- Never run calibration while the robot is free to collide with people or itself.
+  `calibrate_on_connect` defaults to `false`.
+
+## Build
+
+Install LeRobot with Feetech support first. Use the same Python 3.12 environment
+for LeRobot and ROS 2 Jazzy:
+
+```bash
+git clone https://github.com/huggingface/lerobot.git ~/lerobot
+cd ~/lerobot
+pip install -e ".[feetech]"
+python3 -c "import lerobot"
+```
+
+Then create the ROS workspace:
+
+```bash
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
+git clone https://github.com/Raibek885/XLeRobot-ROS2.git
+
+cd ~/ros2_ws
+source /opt/ros/jazzy/setup.bash
+rosdep install --from-paths src --ignore-src -r -y
+colcon build --symlink-install --packages-up-to xlerobot_bringup
+source install/setup.bash
+```
+
+Run a hardware-free smoke test first:
+
+```bash
+ros2 launch xlerobot_bringup joy_teleop.launch.py mock_hardware:=true
+```
+
+Then launch the real robot after checking port names and lifting the drive wheels:
+
+```bash
+ros2 launch xlerobot_bringup joy_teleop.launch.py \
+  port1:=/dev/ttyACM0 port2:=/dev/ttyACM1 \
+  robot_variant:=xlerobot robot_id:=my_xlerobot
+```
+
+Other variants are `xlerobot_2wheels` and `xlerobot_mecanum`. Stable udev aliases
+are strongly recommended instead of relying on `ttyACM` enumeration order.
+Use the same `robot_id` that owns the existing LeRobot calibration file. Only set
+`calibrate_on_connect:=true` when you intentionally want an interactive calibration.
+
+## Xbox-style controls
+
+- Hold **A**: drive with the left stick; right-stick horizontal turns the base.
+- Hold **A + B**: turbo drive.
+- Hold **LB**: left arm. Hold **RB**: right arm.
+- Hold **Start/Menu**: head pan/tilt.
+- In arm mode, axes `0/1/4/3/6/7` control shoulder pan, shoulder lift, elbow,
+  wrist flex, wrist roll, and gripper. Axis numbering varies between controllers;
+  inspect `ros2 topic echo /joy` and edit
+  `xlerobot_bringup/config/joy_teleop.yaml` if needed.
+
+Releasing the drive deadman publishes zero velocity. Missing joystick messages and
+stale `cmd_vel` input independently stop the base after 250 ms.
+
+## Leader/follower
+
+```bash
+ros2 launch xlerobot_bringup leader_follower.launch.py mock_hardware:=true
+```
+
+The default leader topic is `/leader/joint_states`. Edit
+`xlerobot_bringup/config/leader_follower.yaml` when leader joint names, directions,
+or zero offsets differ. All positions are ROS-standard radians; grippers use
+normalized `[0, 1]` opening. The hardware bridge converts revolute joints to
+degrees and grippers to the existing driver's percentage convention.
+
+## Interfaces
+
+| Direction | Topic/service | Type |
+| --- | --- | --- |
+| Output | `joint_states` | `sensor_msgs/msg/JointState` |
+| Output | `base_velocity` | `geometry_msgs/msg/TwistStamped` |
+| Input | `joint_commands` | `sensor_msgs/msg/JointState` (partial commands allowed) |
+| Input | `joint_trajectory` | `trajectory_msgs/msg/JointTrajectory` (last point used) |
+| Input | `cmd_vel` | `geometry_msgs/msg/Twist` |
+| Service | `enable` | `std_srvs/srv/SetBool` |
+
+Calling `enable` with `false` suppresses commands and immediately stops the base.
+This is a software stop, not a substitute for a physical emergency stop.
+
+## Acknowledgements
+
+The hardware adapters are derived from the Apache-2.0 licensed
+[`Vector-Wangel/XLeRobot`](https://github.com/Vector-Wangel/XLeRobot) and LeRobot
+implementations. The ROS package organization was informed by
+[`legalaspro/so101-ros-physical-ai`](https://github.com/legalaspro/so101-ros-physical-ai).
