@@ -8,12 +8,13 @@ xlerobot_joy_teleop:
     joy_timeout: 0.25
     deadzone: 0.12
 
-    # Linux joy_node mapping for a common Xbox controller.
+    # Xbox Series BLE mapping exposed by Linux joy_node with
+    # SDL_JOYSTICK_HIDAPI=0.
     base_deadman_button: 0       # A
     turbo_button: 1              # B (while A is held)
-    left_arm_mode_button: 4      # LB
-    right_arm_mode_button: 5     # RB
-    head_mode_button: 7          # Start/Menu
+    left_arm_mode_button: 6      # LB
+    right_arm_mode_button: 7     # RB
+    head_mode_button: 11         # Start/Menu
 
     linear_x_axis: 1             # left stick vertical
     linear_y_axis: 0             # left stick horizontal
