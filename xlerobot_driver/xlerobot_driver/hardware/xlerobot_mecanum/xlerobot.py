@@ -36,6 +36,8 @@ from .config_xlerobot import XLerobotConfig
 
 logger = logging.getLogger(__name__)
 
+BUS_READ_RETRIES = 2
+
 
 class XLerobot(Robot):
     """
@@ -465,10 +467,18 @@ class XLerobot(Robot):
 
         # Read actuators position for arm and vel for base
         start = time.perf_counter()
-        left_arm_pos = self.bus1.sync_read("Present_Position", self.left_arm_motors)
-        right_arm_pos = self.bus2.sync_read("Present_Position", self.right_arm_motors)
-        head_pos = self.bus1.sync_read("Present_Position", self.head_motors)
-        base_wheel_vel = self.bus2.sync_read("Present_Velocity", list(self.base_motors))
+        left_arm_pos = self.bus1.sync_read(
+            "Present_Position", self.left_arm_motors, num_retry=BUS_READ_RETRIES
+        )
+        right_arm_pos = self.bus2.sync_read(
+            "Present_Position", self.right_arm_motors, num_retry=BUS_READ_RETRIES
+        )
+        head_pos = self.bus1.sync_read(
+            "Present_Position", self.head_motors, num_retry=BUS_READ_RETRIES
+        )
+        base_wheel_vel = self.bus2.sync_read(
+            "Present_Velocity", list(self.base_motors), num_retry=BUS_READ_RETRIES
+        )
         base_vel = self._wheel_raw_to_body(base_wheel_vel)
 
         left_arm_state = {f"{k}.pos": v for k, v in left_arm_pos.items()}
@@ -524,9 +534,15 @@ class XLerobot(Robot):
 
         if self.config.max_relative_target is not None:
             # Read present positions for left arm, right arm, and head
-            present_pos_left = self.bus1.sync_read("Present_Position", self.left_arm_motors)
-            present_pos_right = self.bus2.sync_read("Present_Position", self.right_arm_motors)
-            present_pos_head = self.bus1.sync_read("Present_Position", self.head_motors)
+            present_pos_left = self.bus1.sync_read(
+                "Present_Position", self.left_arm_motors, num_retry=BUS_READ_RETRIES
+            )
+            present_pos_right = self.bus2.sync_read(
+                "Present_Position", self.right_arm_motors, num_retry=BUS_READ_RETRIES
+            )
+            present_pos_head = self.bus1.sync_read(
+                "Present_Position", self.head_motors, num_retry=BUS_READ_RETRIES
+            )
 
             # Combine all present positions
             present_pos = {**present_pos_left, **present_pos_right, **present_pos_head}
