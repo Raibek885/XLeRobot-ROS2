@@ -22,6 +22,7 @@ setup(
     entry_points={
         "console_scripts": [
             "xlerobot_driver = xlerobot_driver.driver_node:main",
+            "xlerobot_calibrate = xlerobot_driver.calibrate:main",
         ],
     },
 )

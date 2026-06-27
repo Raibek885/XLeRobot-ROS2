@@ -74,7 +74,17 @@ ros2 launch xlerobot_bringup joy_teleop.launch.py \
 Other variants are `xlerobot_2wheels` and `xlerobot_mecanum`. Stable udev aliases
 are strongly recommended instead of relying on `ttyACM` enumeration order.
 Use the same `robot_id` that owns the existing LeRobot calibration file. Only set
-`calibrate_on_connect:=true` when you intentionally want an interactive calibration.
+`calibrate_on_connect:=false` in normal launches. If no calibration exists, run the
+interactive CLI from a terminal with the wheels lifted and free space around both
+arms:
+
+```bash
+xlerobot_calibrate \
+  --variant xlerobot \
+  --robot-id my_xlerobot \
+  --port1 /dev/ttyACM0 \
+  --port2 /dev/ttyACM1
+```
 
 ## Xbox-style controls
 

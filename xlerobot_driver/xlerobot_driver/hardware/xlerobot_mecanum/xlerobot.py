@@ -191,37 +191,33 @@ class XLerobot(Robot):
         self.bus1.connect()
         self.bus2.connect()
 
-        # Check if calibration file exists and ask user if they want to restore it
+        # ROS launch processes do not have a reliable interactive stdin. Restore
+        # automatically for normal operation and reserve interaction for the
+        # dedicated xlerobot_calibrate CLI.
         if self.calibration_fpath.is_file():
-            logger.info(f"Calibration file found at {self.calibration_fpath}")
-            user_input = input(
-                f"Press ENTER to restore calibration from file, or type 'c' and press ENTER to run manual calibration: "
-            )
-            if user_input.strip().lower() != "c":
-                logger.info("Attempting to restore calibration from file...")
-                try:
-                    # Load calibration data into bus memory
-                    self.bus1.calibration = {k: v for k, v in self.calibration.items() if k in self.bus1.motors}
-                    self.bus2.calibration = {k: v for k, v in self.calibration.items() if k in self.bus2.motors}
-                    logger.info("Calibration data loaded into bus memory successfully!")
-
-                    # Write calibration data to motors
-                    self.bus1.write_calibration({k: v for k, v in self.calibration.items() if k in self.bus1.motors})
-                    self.bus2.write_calibration({k: v for k, v in self.calibration.items() if k in self.bus2.motors})
-                    logger.info("Calibration restored successfully from file!")
-
-                except Exception as e:
-                    logger.warning(f"Failed to restore calibration from file: {e}")
-                    if calibrate:
-                        logger.info("Proceeding with manual calibration...")
-                        self.calibrate()
+            if calibrate:
+                logger.info("Forced manual calibration requested.")
+                self.calibrate()
             else:
-                logger.info("User chose manual calibration...")
-                if calibrate:
-                    self.calibrate()
+                logger.info(f"Restoring calibration from {self.calibration_fpath}")
+                self.bus1.calibration = {
+                    k: v for k, v in self.calibration.items() if k in self.bus1.motors
+                }
+                self.bus2.calibration = {
+                    k: v for k, v in self.calibration.items() if k in self.bus2.motors
+                }
+                self.bus1.write_calibration(self.bus1.calibration)
+                self.bus2.write_calibration(self.bus2.calibration)
         elif calibrate:
-            logger.info("No calibration file found, proceeding with manual calibration...")
+            logger.info("No calibration file found; starting manual calibration.")
             self.calibrate()
+        else:
+            self.bus1.disconnect(self.config.disable_torque_on_disconnect)
+            self.bus2.disconnect(self.config.disable_torque_on_disconnect)
+            raise RuntimeError(
+                f"Calibration file not found: {self.calibration_fpath}. "
+                "Run xlerobot_calibrate before starting the ROS driver."
+            )
 
         for cam in self.cameras.values():
             cam.connect()
