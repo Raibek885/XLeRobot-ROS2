@@ -79,7 +79,7 @@ interactive CLI from a terminal with the wheels lifted and free space around bot
 arms:
 
 ```bash
-xlerobot_calibrate \
+ros2 run xlerobot_driver xlerobot_calibrate \
   --variant xlerobot \
   --robot-id my_xlerobot \
   --port1 /dev/ttyACM0 \
