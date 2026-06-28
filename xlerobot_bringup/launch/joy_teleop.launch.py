@@ -30,6 +30,8 @@ def generate_launch_description() -> LaunchDescription:
     joy_device_id = LaunchConfiguration("joy_device_id")
     enable_macro = LaunchConfiguration("enable_macro")
     arm_p_coefficient = LaunchConfiguration("arm_p_coefficient")
+    state_publish_rate = LaunchConfiguration("state_publish_rate")
+    command_rate = LaunchConfiguration("command_rate")
 
     return LaunchDescription(
         [
@@ -42,7 +44,9 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument("port2", default_value="/dev/ttyACM1"),
             DeclareLaunchArgument("joy_device_id", default_value="0"),
             DeclareLaunchArgument("enable_macro", default_value="true"),
-            DeclareLaunchArgument("arm_p_coefficient", default_value="24"),
+            DeclareLaunchArgument("arm_p_coefficient", default_value="16"),
+            DeclareLaunchArgument("state_publish_rate", default_value="15.0"),
+            DeclareLaunchArgument("command_rate", default_value="30.0"),
             Node(
                 package="xlerobot_driver",
                 executable="xlerobot_driver",
@@ -60,6 +64,12 @@ def generate_launch_description() -> LaunchDescription:
                         "port2": port2,
                         "arm_p_coefficient": ParameterValue(
                             arm_p_coefficient, value_type=int
+                        ),
+                        "state_publish_rate": ParameterValue(
+                            state_publish_rate, value_type=float
+                        ),
+                        "command_rate": ParameterValue(
+                            command_rate, value_type=float
                         ),
                     },
                 ],

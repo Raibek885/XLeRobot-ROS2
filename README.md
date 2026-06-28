@@ -125,18 +125,26 @@ launch command to disable this feature.
 
 ### Arm holding stiffness
 
-The driver defaults to `arm_p_coefficient:=24`, between the previous compliant
-setting of 16 and the STS3215 factory value of 32. After checking that motor
-voltage remains stable, temperatures stay normal, and the arms do not oscillate,
-the factory stiffness can be tested with:
+The driver defaults to the compliant `arm_p_coefficient:=16`. After confirming
+stable serial communication under load, test 24 first and only then the STS3215
+factory stiffness of 32:
 
 ```bash
+ros2 launch xlerobot_bringup joy_teleop.launch.py arm_p_coefficient:=24 ...
 ros2 launch xlerobot_bringup joy_teleop.launch.py arm_p_coefficient:=32 ...
 ```
 
 This changes position-loop stiffness, not the configured torque/current safety
 limits. Stop immediately if an arm chatters, oscillates, overheats, or produces
 communication errors under load.
+
+The default hardware state and command rates are intentionally conservative at
+15 Hz and 30 Hz. They can be reduced further for noisy or long Feetech buses:
+
+```bash
+ros2 launch xlerobot_bringup joy_teleop.launch.py \
+  state_publish_rate:=10.0 command_rate:=20.0 ...
+```
 
 ## Leader/follower
 

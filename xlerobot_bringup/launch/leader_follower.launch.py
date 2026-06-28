@@ -22,6 +22,8 @@ def generate_launch_description() -> LaunchDescription:
     port1 = LaunchConfiguration("port1")
     port2 = LaunchConfiguration("port2")
     arm_p_coefficient = LaunchConfiguration("arm_p_coefficient")
+    state_publish_rate = LaunchConfiguration("state_publish_rate")
+    command_rate = LaunchConfiguration("command_rate")
 
     return LaunchDescription(
         [
@@ -31,7 +33,9 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument("calibrate_on_connect", default_value="false"),
             DeclareLaunchArgument("port1", default_value="/dev/ttyACM0"),
             DeclareLaunchArgument("port2", default_value="/dev/ttyACM1"),
-            DeclareLaunchArgument("arm_p_coefficient", default_value="24"),
+            DeclareLaunchArgument("arm_p_coefficient", default_value="16"),
+            DeclareLaunchArgument("state_publish_rate", default_value="15.0"),
+            DeclareLaunchArgument("command_rate", default_value="30.0"),
             Node(
                 package="xlerobot_driver",
                 executable="xlerobot_driver",
@@ -48,6 +52,12 @@ def generate_launch_description() -> LaunchDescription:
                         "port2": port2,
                         "arm_p_coefficient": ParameterValue(
                             arm_p_coefficient, value_type=int
+                        ),
+                        "state_publish_rate": ParameterValue(
+                            state_publish_rate, value_type=float
+                        ),
+                        "command_rate": ParameterValue(
+                            command_rate, value_type=float
                         ),
                     },
                 ],

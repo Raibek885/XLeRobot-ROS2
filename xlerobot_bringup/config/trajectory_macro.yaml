@@ -5,7 +5,7 @@ xlerobot_trajectory_macro:
     joint_command_topic: joint_commands
     cmd_vel_topic: cmd_vel
     macro_path: ~/.ros/xlerobot_macros/connect_sticks.json
-    sample_rate: 30.0
+    sample_rate: 15.0
 
     # Confirmed Xbox Series BLE mapping with SDL_JOYSTICK_HIDAPI=0.
     record_button: 4             # Y
