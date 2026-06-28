@@ -100,6 +100,29 @@ ros2 run xlerobot_driver xlerobot_calibrate \
 Releasing the drive deadman publishes zero velocity. Missing joystick messages and
 stale `cmd_vel` input independently stop the base after 250 ms.
 
+## Competition trajectory macro
+
+`joy_teleop.launch.py` also starts a guarded recorder/player for a repeatable
+bimanual task. It records the ten arm joints but deliberately excludes both
+grippers, so returning to the recorded start pose cannot release held objects.
+
+1. Grasp both objects at repeatable marked depths and manually move the arms to a
+   safe pre-insertion pose (`task_ready`).
+2. Hold **B** and tap **Y** to start recording. The first captured frame becomes
+   `task_ready`.
+3. Perform the task with normal **LB**/**RB** teleoperation.
+4. Hold **B** and tap **Y** again to save the macro.
+5. On later attempts, grasp the objects, move the arms roughly near `task_ready`,
+   and tap **Y**. The robot takes four seconds to reach the exact recorded start,
+   waits briefly, and replays the task.
+
+The macro is stored at `~/.ros/xlerobot_macros/connect_sticks.json`. Replay is
+refused if any controlled joint is more than 35 degrees from `task_ready`.
+Pressing **B**, **A**, **LB**, **RB**, or **Start/Menu**, or losing the gamepad
+connection, cancels replay immediately. Start with the wheels lifted and keep a
+hand near power while validating a new macro. Set `enable_macro:=false` on the
+launch command to disable this feature.
+
 ## Leader/follower
 
 ```bash

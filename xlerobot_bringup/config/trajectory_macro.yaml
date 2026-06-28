@@ -1,0 +1,36 @@
+xlerobot_trajectory_macro:
+  ros__parameters:
+    joy_topic: joy
+    joint_states_topic: joint_states
+    joint_command_topic: joint_commands
+    cmd_vel_topic: cmd_vel
+    macro_path: ~/.ros/xlerobot_macros/connect_sticks.json
+    sample_rate: 30.0
+
+    # Confirmed Xbox Series BLE mapping with SDL_JOYSTICK_HIDAPI=0.
+    record_button: 4             # Y
+    record_modifier_button: 1    # B
+    base_button: 0               # A
+    left_arm_button: 6           # LB
+    right_arm_button: 7          # RB
+    head_button: 11              # Start/Menu
+
+    transition_duration: 4.0
+    settle_duration: 0.5
+    max_start_delta_degrees: 35.0
+    minimum_recording_duration: 0.5
+    joy_timeout: 0.5
+
+    # Grippers are deliberately excluded so replay never releases the rods.
+    joint_names:
+      - left_arm_shoulder_pan
+      - left_arm_shoulder_lift
+      - left_arm_elbow_flex
+      - left_arm_wrist_flex
+      - left_arm_wrist_roll
+      - right_arm_shoulder_pan
+      - right_arm_shoulder_lift
+      - right_arm_elbow_flex
+      - right_arm_wrist_flex
+      - right_arm_wrist_roll
+

@@ -2,6 +2,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -15,6 +16,9 @@ def generate_launch_description() -> LaunchDescription:
     teleop_config = PathJoinSubstitution(
         [FindPackageShare("xlerobot_bringup"), "config", "joy_teleop.yaml"]
     )
+    macro_config = PathJoinSubstitution(
+        [FindPackageShare("xlerobot_bringup"), "config", "trajectory_macro.yaml"]
+    )
 
     namespace = LaunchConfiguration("namespace")
     mock_hardware = LaunchConfiguration("mock_hardware")
@@ -24,6 +28,7 @@ def generate_launch_description() -> LaunchDescription:
     port1 = LaunchConfiguration("port1")
     port2 = LaunchConfiguration("port2")
     joy_device_id = LaunchConfiguration("joy_device_id")
+    enable_macro = LaunchConfiguration("enable_macro")
 
     return LaunchDescription(
         [
@@ -35,6 +40,7 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument("port1", default_value="/dev/ttyACM0"),
             DeclareLaunchArgument("port2", default_value="/dev/ttyACM1"),
             DeclareLaunchArgument("joy_device_id", default_value="0"),
+            DeclareLaunchArgument("enable_macro", default_value="true"),
             Node(
                 package="xlerobot_driver",
                 executable="xlerobot_driver",
@@ -69,6 +75,15 @@ def generate_launch_description() -> LaunchDescription:
                 executable="joy_teleop",
                 namespace=namespace,
                 parameters=[teleop_config],
+                output="screen",
+                emulate_tty=True,
+            ),
+            Node(
+                package="xlerobot_teleop",
+                executable="trajectory_macro",
+                namespace=namespace,
+                parameters=[macro_config],
+                condition=IfCondition(enable_macro),
                 output="screen",
                 emulate_tty=True,
             ),

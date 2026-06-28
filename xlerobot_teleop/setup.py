@@ -23,6 +23,7 @@ setup(
         "console_scripts": [
             "joy_teleop = xlerobot_teleop.joy_teleop_node:main",
             "leader_follower = xlerobot_teleop.leader_follower_node:main",
+            "trajectory_macro = xlerobot_teleop.trajectory_macro_node:main",
         ],
     },
 )
