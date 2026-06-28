@@ -52,6 +52,7 @@ class XLerobot2WheelsConfig(RobotConfig):
     port1: str = "/dev/ttyACM0"  # port to connect to the bus (so101 + head camera)
     port2: str = "/dev/ttyACM1"  # port to connect to the bus (arms + 2 wheels)
     disable_torque_on_disconnect: bool = True
+    arm_p_coefficient: int = 24
 
     # `max_relative_target` limits the magnitude of the relative positional target vector for safety purposes.
     # Set this to a positive scalar to have the same value for all motors, or a list that is the same length as

@@ -322,24 +322,22 @@ class XLerobot(Robot):
 
         for name in self.left_arm_motors:
             self.bus1.write("Operating_Mode", name, OperatingMode.POSITION.value)
-            # Set P_Coefficient to lower value to avoid shakiness (Default is 32)
-            self.bus1.write("P_Coefficient", name, 16)
+            # A configurable P gain trades compliance for holding stiffness.
+            self.bus1.write("P_Coefficient", name, self.config.arm_p_coefficient)
             # Set I_Coefficient and D_Coefficient to default value 0 and 32
             self.bus1.write("I_Coefficient", name, 0)
             self.bus1.write("D_Coefficient", name, 43)
 
         for name in self.head_motors:
             self.bus1.write("Operating_Mode", name, OperatingMode.POSITION.value)
-            # Set P_Coefficient to lower value to avoid shakiness (Default is 32)
-            self.bus1.write("P_Coefficient", name, 16)
+            self.bus1.write("P_Coefficient", name, self.config.arm_p_coefficient)
             # Set I_Coefficient and D_Coefficient to default value 0 and 32
             self.bus1.write("I_Coefficient", name, 0)
             self.bus1.write("D_Coefficient", name, 43)
 
         for name in self.right_arm_motors:
             self.bus2.write("Operating_Mode", name, OperatingMode.POSITION.value)
-            # Set P_Coefficient to lower value to avoid shakiness (Default is 32)
-            self.bus2.write("P_Coefficient", name, 16)
+            self.bus2.write("P_Coefficient", name, self.config.arm_p_coefficient)
             # Set I_Coefficient and D_Coefficient to default value 0 and 32
             self.bus2.write("I_Coefficient", name, 0)
             self.bus2.write("D_Coefficient", name, 43)

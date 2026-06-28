@@ -123,6 +123,21 @@ connection, cancels replay immediately. Start with the wheels lifted and keep a
 hand near power while validating a new macro. Set `enable_macro:=false` on the
 launch command to disable this feature.
 
+### Arm holding stiffness
+
+The driver defaults to `arm_p_coefficient:=24`, between the previous compliant
+setting of 16 and the STS3215 factory value of 32. After checking that motor
+voltage remains stable, temperatures stay normal, and the arms do not oscillate,
+the factory stiffness can be tested with:
+
+```bash
+ros2 launch xlerobot_bringup joy_teleop.launch.py arm_p_coefficient:=32 ...
+```
+
+This changes position-loop stiffness, not the configured torque/current safety
+limits. Stop immediately if an arm chatters, oscillates, overheats, or produces
+communication errors under load.
+
 ## Leader/follower
 
 ```bash

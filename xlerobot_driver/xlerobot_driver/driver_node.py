@@ -48,6 +48,7 @@ class XLeRobotDriver(Node):
         self.declare_parameter("mock_hardware", False)
         self.declare_parameter("calibrate_on_connect", False)
         self.declare_parameter("disable_torque_on_disconnect", True)
+        self.declare_parameter("arm_p_coefficient", 24)
         self.declare_parameter("max_relative_target_degrees", 15.0)
         self.declare_parameter("state_publish_rate", 30.0)
         self.declare_parameter("command_rate", 50.0)
@@ -59,6 +60,10 @@ class XLeRobotDriver(Node):
         self.declare_parameter("trajectory_command_topic", "joint_trajectory")
         self.declare_parameter("cmd_vel_topic", "cmd_vel")
         self.declare_parameter("base_velocity_topic", "base_velocity")
+
+        arm_p_coefficient = int(self.get_parameter("arm_p_coefficient").value)
+        if not 0 <= arm_p_coefficient <= 254:
+            raise ValueError("arm_p_coefficient must be between 0 and 254")
 
         self._enabled = True
         self._closed = False
@@ -136,6 +141,9 @@ class XLeRobotDriver(Node):
             "port1": str(self.get_parameter("port1").value),
             "port2": str(self.get_parameter("port2").value),
             "use_degrees": True,
+            "arm_p_coefficient": int(
+                self.get_parameter("arm_p_coefficient").value
+            ),
             "disable_torque_on_disconnect": bool(
                 self.get_parameter("disable_torque_on_disconnect").value
             ),

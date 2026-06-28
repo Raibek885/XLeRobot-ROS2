@@ -7,6 +7,7 @@ xlerobot_driver:
     mock_hardware: false
     calibrate_on_connect: false
     disable_torque_on_disconnect: true
+    arm_p_coefficient: 24
     max_relative_target_degrees: 15.0
     state_publish_rate: 30.0
     command_rate: 50.0

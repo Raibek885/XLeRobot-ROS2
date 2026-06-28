@@ -21,6 +21,7 @@ def generate_launch_description() -> LaunchDescription:
     calibrate_on_connect = LaunchConfiguration("calibrate_on_connect")
     port1 = LaunchConfiguration("port1")
     port2 = LaunchConfiguration("port2")
+    arm_p_coefficient = LaunchConfiguration("arm_p_coefficient")
 
     return LaunchDescription(
         [
@@ -30,6 +31,7 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument("calibrate_on_connect", default_value="false"),
             DeclareLaunchArgument("port1", default_value="/dev/ttyACM0"),
             DeclareLaunchArgument("port2", default_value="/dev/ttyACM1"),
+            DeclareLaunchArgument("arm_p_coefficient", default_value="24"),
             Node(
                 package="xlerobot_driver",
                 executable="xlerobot_driver",
@@ -44,6 +46,9 @@ def generate_launch_description() -> LaunchDescription:
                         ),
                         "port1": port1,
                         "port2": port2,
+                        "arm_p_coefficient": ParameterValue(
+                            arm_p_coefficient, value_type=int
+                        ),
                     },
                 ],
                 output="screen",
