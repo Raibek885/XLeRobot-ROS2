@@ -18,13 +18,13 @@ xlerobot_joy_teleop:
 
     linear_x_axis: 1             # left stick vertical
     linear_y_axis: 0             # left stick horizontal
-    angular_z_axis: 3            # right stick horizontal
+    angular_z_axis: 2            # right stick horizontal
     max_linear_speed: 0.20       # m/s
     max_angular_speed: 1.05      # rad/s
     turbo_multiplier: 1.5
 
-    # In arm mode: axes 0/1/4/3/6/7 control the six joints.
-    arm_axes: [0, 1, 4, 3, 6, 7]
+    # In arm mode: axes 0/1/3/2/6/7 control the six joints.
+    arm_axes: [0, 1, 3, 2, 6, 7]
     head_axes: [0, 1]
     joint_rate: 0.70             # rad/s
     gripper_rate: 0.65           # normalized opening/s
