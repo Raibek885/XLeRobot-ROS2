@@ -103,4 +103,3 @@ def interpolate_positions(
         start_value + (goal_value - start_value) * alpha
         for start_value, goal_value in zip(start_values, goal_values)
     ]
-

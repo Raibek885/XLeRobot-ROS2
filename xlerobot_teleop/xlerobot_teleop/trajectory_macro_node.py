@@ -335,4 +335,3 @@ def main(args: list[str] | None = None) -> None:
         node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()
-

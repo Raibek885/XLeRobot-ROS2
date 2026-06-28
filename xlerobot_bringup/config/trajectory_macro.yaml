@@ -33,4 +33,3 @@ xlerobot_trajectory_macro:
       - right_arm_elbow_flex
       - right_arm_wrist_flex
       - right_arm_wrist_roll
-

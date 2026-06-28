@@ -26,4 +26,3 @@ class TrajectoryMacroTests(unittest.TestCase):
     def test_rejects_malformed_frames(self):
         with self.assertRaisesRegex(ValueError, "expected"):
             JointMacro.from_frames(["a", "b"], 30.0, [[1.0]])
-
