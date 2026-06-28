@@ -49,7 +49,8 @@ class JoyTeleop(Node):
         self.declare_parameter("joint_rate", 0.70)
         self.declare_parameter("gripper_rate", 0.65)
         self.declare_parameter("head_rate", 0.70)
-        self.declare_parameter("arm_axes", [0, 1, 4, 3, 6, 7])
+        self.declare_parameter("arm_axes", [0, 1, 3, 2, 6, 7])
+        self.declare_parameter("arm_axis_directions", [1, 1, 1, 1, 1, 1])
         self.declare_parameter("head_axes", [0, 1])
 
         rate = float(self.get_parameter("publish_rate").value)
@@ -59,9 +60,21 @@ class JoyTeleop(Node):
         if not 0.0 <= deadzone < 1.0:
             raise ValueError("deadzone must be in [0, 1)")
         self._arm_axes = [int(value) for value in self.get_parameter("arm_axes").value]
+        self._arm_axis_directions = [
+            int(value) for value in self.get_parameter("arm_axis_directions").value
+        ]
         self._head_axes = [int(value) for value in self.get_parameter("head_axes").value]
-        if len(self._arm_axes) != 6 or len(self._head_axes) != 2:
-            raise ValueError("arm_axes must contain 6 entries and head_axes must contain 2")
+        if (
+            len(self._arm_axes) != 6
+            or len(self._arm_axis_directions) != 6
+            or len(self._head_axes) != 2
+        ):
+            raise ValueError(
+                "arm_axes and arm_axis_directions must contain 6 entries; "
+                "head_axes must contain 2"
+            )
+        if any(direction not in (-1, 1) for direction in self._arm_axis_directions):
+            raise ValueError("arm_axis_directions entries must be -1 or 1")
 
         self._cmd_vel_pub = self.create_publisher(
             Twist, str(self.get_parameter("cmd_vel_topic").value), 10
@@ -207,15 +220,17 @@ class JoyTeleop(Node):
         deadzone = float(self.get_parameter("deadzone").value)
         if group == "head":
             axes = self._head_axes
+            directions = [1, 1]
             rate = float(self.get_parameter("head_rate").value)
             rates = [rate, rate]
         else:
             axes = self._arm_axes
+            directions = self._arm_axis_directions
             joint_rate = float(self.get_parameter("joint_rate").value)
             rates = [joint_rate] * 5 + [float(self.get_parameter("gripper_rate").value)]
 
-        for name, axis, rate in zip(joints, axes, rates):
-            delta = axis_value(self._joy.axes, axis, deadzone) * rate * dt
+        for name, axis, direction, rate in zip(joints, axes, directions, rates):
+            delta = axis_value(self._joy.axes, axis, deadzone) * direction * rate * dt
             lower, upper = self._limits[name]
             self._targets[name] = clamp(self._targets[name] + delta, lower, upper)
 

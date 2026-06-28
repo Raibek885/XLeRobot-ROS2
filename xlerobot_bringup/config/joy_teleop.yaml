@@ -25,6 +25,8 @@ xlerobot_joy_teleop:
 
     # In arm mode: axes 0/1/3/2/6/7 control the six joints.
     arm_axes: [0, 1, 3, 2, 6, 7]
+    # Invert the elbow (right-stick vertical) for both arms.
+    arm_axis_directions: [1, 1, -1, 1, 1, 1]
     head_axes: [0, 1]
     joint_rate: 0.70             # rad/s
     gripper_rate: 0.65           # normalized opening/s
